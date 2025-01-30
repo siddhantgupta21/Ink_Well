@@ -11,10 +11,15 @@ class Question5
                 Console.Write("Please enter your date of birth (yyyy-MM-dd): ");
                 string? input = Console.ReadLine();
 
+                if (string.IsNullOrEmpty(input))
+                {
+                    throw new ArgumentException("Input cannot be empty.");
+                }
+
                 DateTime dob = DateTime.ParseExact(input, "yyyy-MM-dd", null);
 
                 DateTime today = DateTime.Today;
-                
+
                 int ageYears = today.Year - dob.Year;
                 int ageMonths = today.Month - dob.Month;
                 int ageDays = today.Day - dob.Day;
@@ -36,7 +41,15 @@ class Question5
             }
             catch (FormatException)
             {
-                Console.WriteLine("Invalid date format. Please use the format yyyy-MM-dd and try again.");
+                Console.WriteLine("Error: The date format you entered is invalid. Please use the format yyyy-MM-dd.");
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message} Please enter a valid date in the format yyyy-MM-dd.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unexpected error: {ex.Message}. Please try again.");
             }
         }
     }
