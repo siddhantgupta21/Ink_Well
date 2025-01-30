@@ -6,12 +6,13 @@ class Question5
     {
         while (true)
         {
-            Console.Write("Please enter your date of birth (yyyy-MM-dd): ");
-            string? input = Console.ReadLine();
-
-        
-            if (DateTime.TryParseExact(input, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out DateTime dob))
+            try
             {
+                Console.Write("Please enter your date of birth (yyyy-MM-dd): ");
+                string? input = Console.ReadLine();
+
+                DateTime dob = DateTime.ParseExact(input, "yyyy-MM-dd", null);
+
                 DateTime today = DateTime.Today;
                 
                 int ageYears = today.Year - dob.Year;
@@ -31,9 +32,9 @@ class Question5
                 }
 
                 Console.WriteLine($"You are {ageYears} years, {ageMonths} months, and {ageDays} days old.");
-                break; 
+                break;
             }
-            else
+            catch (FormatException)
             {
                 Console.WriteLine("Invalid date format. Please use the format yyyy-MM-dd and try again.");
             }
