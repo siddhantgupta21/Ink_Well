@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 class Question2
 {
@@ -16,26 +17,40 @@ class Question2
         try
         {
             string[] parts = input.Split(',');
-            int[] numbers = new int[parts.Length];
+            List<int> numbers = new List<int>();
 
-            for (int i = 0; i < parts.Length; i++)
+            foreach (var part in parts)
             {
-                numbers[i] = int.Parse(parts[i].Trim());
-            }
-            int max = numbers[0];
-            for (int i = 1; i < numbers.Length; i++)
-            {
-                if (numbers[i] > max)
+                if (int.TryParse(part.Trim(), out int number))
                 {
-                    max = numbers[i];
+                    numbers.Add(number);
+                }
+                else
+                {
+                    Console.WriteLine($"Invalid number: '{part.Trim()}'. Skipping.");
+                }
+            }
+
+            if (numbers.Count == 0)
+            {
+                Console.WriteLine("No valid numbers entered.");
+                return;
+            }
+
+            int max = numbers[0];
+            foreach (var number in numbers)
+            {
+                if (number > max)
+                {
+                    max = number;
                 }
             }
 
             Console.WriteLine($"The maximum number is: {max}");
         }
-        catch (FormatException)
+        catch (Exception)
         {
-            Console.WriteLine("Invalid input. Please enter numbers separated by commas.");
+            Console.WriteLine("An unexpected error occurred.");
         }
     }
 }

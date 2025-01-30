@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 class Question3
 {
@@ -23,28 +24,43 @@ class Question3
                 continue;
             }
 
-            int[] numbers = new int[numberStrings.Length];
+            List<int> numbers = new List<int>();
             bool isValid = true;
 
             for (int i = 0; i < numberStrings.Length; i++)
             {
-                if (!int.TryParse(numberStrings[i].Trim(), out numbers[i]))
+                if (!int.TryParse(numberStrings[i].Trim(), out int number))
                 {
                     Console.WriteLine($"Invalid entry '{numberStrings[i]}'. Please enter only valid numbers.");
                     isValid = false;
                     break;
                 }
+                numbers.Add(number);
             }
 
             if (!isValid)
             {
                 continue;
             }
+            List<int> smallestNumbers = new List<int>();
 
-           
-            Array.Sort(numbers);
-            Console.WriteLine($"The 3 smallest numbers are: {numbers[0]}, {numbers[1]}, {numbers[2]}");
+            for (int i = 0; i < 3; i++)
+            {
+                int min = int.MaxValue;
+                foreach (int num in numbers)
+                {
+                    if (!smallestNumbers.Contains(num) && num < min)
+                    {
+                        min = num;
+                    }
+                }
+
+                smallestNumbers.Add(min);
+            }
+
+            Console.WriteLine($"The 3 smallest numbers are: {smallestNumbers[0]}, {smallestNumbers[1]}, {smallestNumbers[2]}");
             break; 
         }
     }
 }
+

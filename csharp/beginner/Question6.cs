@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 class Question6
@@ -6,19 +7,26 @@ class Question6
     public static void Solve() 
     {
         string filePath = "FavoriteMovies.txt";
+        List<string> movies = new List<string>();
+
         Console.WriteLine("Enter your favorite movies (one per line). Type 'done' when you are finished:");
+
+        while (true)
+        {
+            string? movie = Console.ReadLine();
+
+            if (movie.ToLower() == "done")
+            {
+                break; 
+            }
+
+            movies.Add(movie); 
+        }
 
         using (StreamWriter writer = new StreamWriter(filePath))
         {
-            while (true)
+            foreach (var movie in movies)
             {
-                string? movie = Console.ReadLine();
-
-                if (string.IsNullOrEmpty(movie) || movie.ToLower() == "done")
-                {
-                    break; 
-                }
-
                 writer.WriteLine(movie); 
             }
         }
@@ -27,9 +35,9 @@ class Question6
 
         if (File.Exists(filePath))
         {
-            string[] movies = File.ReadAllLines(filePath);
+            string[] moviesFromFile = File.ReadAllLines(filePath);
 
-            foreach (var movie in movies)
+            foreach (var movie in moviesFromFile)
             {
                 Console.WriteLine(movie.ToUpper());
             }

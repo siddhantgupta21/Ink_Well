@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 class Question4
 {
@@ -17,17 +18,18 @@ class Question4
 
             string[] numberStrings = input.Split(',');
 
-            int[] numbers = new int[numberStrings.Length];
+            List<int> numbers = new List<int>();
             bool isValid = true;
 
             for (int i = 0; i < numberStrings.Length; i++)
             {
-                if (!int.TryParse(numberStrings[i].Trim(), out numbers[i]))
+                if (!int.TryParse(numberStrings[i].Trim(), out int number))
                 {
                     Console.WriteLine($"Invalid entry '{numberStrings[i]}'. Please enter only valid numbers.");
                     isValid = false;
                     break;
                 }
+                numbers.Add(number);
             }
 
             if (!isValid)
@@ -35,8 +37,8 @@ class Question4
                 continue;
             }
 
-            Array.Sort(numbers);
-            Array.Reverse(numbers);
+            numbers.Sort();
+            numbers.Reverse();
 
             Console.WriteLine("Numbers in descending order:");
             foreach (var number in numbers)
