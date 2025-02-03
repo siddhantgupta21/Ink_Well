@@ -13,7 +13,7 @@ namespace CIntermediate
 
         public override double GetResult()
         {
-            return base.GetResult() * 1_000_000; 
+            return base.GetResult() * 1e6; 
         }
     }
 }

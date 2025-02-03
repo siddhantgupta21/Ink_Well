@@ -4,8 +4,9 @@ namespace CIntermediate
 {
     public class Calculator : ICalculator
     {
-        private double Result { get; set; }
-        protected void SetResult(double value)
+        private object Result { get; set; }
+
+        protected void SetResult(object value)
         {
             Result = value;
         }
@@ -27,9 +28,16 @@ namespace CIntermediate
             Result = a + b;
             return (float)Result;
         }
+
         public virtual double GetResult()
         {
-            return Result;
+            if (Result is int)
+                return Convert.ToDouble(Result);
+            if (Result is float)
+                return Convert.ToDouble(Result);
+            if (Result is double)
+                return (double)Result;
+            throw new InvalidOperationException("Result is not a numeric type");
         }
     }
 }
