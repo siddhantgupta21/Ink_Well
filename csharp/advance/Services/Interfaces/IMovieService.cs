@@ -1,7 +1,8 @@
-using System.Collections.Generic;
+
 
 namespace IMDBApplication
 {
+    using System.Collections.Generic;
     public interface IMovieService
     {
         void AddMovie(string movieName, int yearOfRelease, string plot, string actorSelection, int producerSelection);
