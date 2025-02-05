@@ -1,8 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+
 
 namespace IMDBApplication{
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
     public class MovieRepository : IMovieRepository
     {
         private readonly List<Movie> _movies;

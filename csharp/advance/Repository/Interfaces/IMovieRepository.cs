@@ -1,7 +1,8 @@
-using System.Collections.Generic;
 
 namespace IMDBApplication
 {
+    using System.Collections.Generic;
+
     public interface IMovieRepository
     {
         void Add(Movie movie);

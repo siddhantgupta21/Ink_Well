@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IMDBApplication
 {
@@ -13,101 +14,55 @@ namespace IMDBApplication
             InitializeMovies();
         }
 
-   public void AddMovie(){
-    Console.WriteLine("Enter the movie name:");
-    string movieName = Console.ReadLine();
-    while (string.IsNullOrEmpty(movieName))
-    {
-        Console.WriteLine("Movie name cannot be empty. Please enter a valid movie name:");
-        movieName = Console.ReadLine();
-    }
-
-    Console.WriteLine("Enter the year of release:");
-    int yearOfRelease;
-    while (!int.TryParse(Console.ReadLine(), out yearOfRelease) || yearOfRelease <= 0)
-    {
-        Console.WriteLine("Invalid year. Please enter a valid positive integer for the year of release:");
-    }
-
-    Console.WriteLine("Enter the plot of the movie:");
-    string plot = Console.ReadLine();
-    while (string.IsNullOrEmpty(plot))
-    {
-        Console.WriteLine("Plot cannot be empty. Please enter a valid plot:");
-        plot = Console.ReadLine();
-    }
-
-    Console.WriteLine("\nSelect actors (enter comma-separated indices of actors):");
-    List<Actor> availableActors = GetAvailableActors();
-    for (int i = 0; i < availableActors.Count; i++)
-    {
-        Console.WriteLine($"{i + 1}. {availableActors[i].Name}");
-    }
-
-    string actorSelection = Console.ReadLine();
-    List<Actor> selectedActors = new List<Actor>();
-
-    foreach (string index in actorSelection.Split(','))
-    {
-        if (int.TryParse(index.Trim(), out int actorIndex) && actorIndex > 0 && actorIndex <= availableActors.Count)
+        public void AddMovie(string movieName, int yearOfRelease, string plot, string actorSelection, int producerSelection)
         {
-            selectedActors.Add(availableActors[actorIndex - 1]);
+            if (string.IsNullOrEmpty(movieName))
+                throw new ArgumentException("Movie name cannot be empty.");
+
+            if (yearOfRelease <= 0)
+                throw new ArgumentException("Invalid year of release.");
+
+            if (string.IsNullOrEmpty(plot))
+                throw new ArgumentException("Plot cannot be empty.");
+
+            List<Actor> availableActors = GetAvailableActors();
+            List<Actor> selectedActors = new List<Actor>();
+
+            foreach (string index in actorSelection.Split(','))
+            {
+                if (int.TryParse(index.Trim(), out int actorIndex) && actorIndex > 0 && actorIndex <= availableActors.Count)
+                {
+                    selectedActors.Add(availableActors[actorIndex - 1]);
+                }
+            }
+
+            if (selectedActors.Count == 0)
+                throw new ArgumentException("You must select at least one actor.");
+
+            List<Producer> availableProducers = GetAvailableProducers();
+            if (producerSelection <= 0 || producerSelection > availableProducers.Count)
+                throw new ArgumentException("Invalid producer selection.");
+
+            Producer selectedProducer = availableProducers[producerSelection - 1];
+
+            var movie = new Movie()
+            {
+                Name = movieName,
+                Plot = plot,
+                YearOfRelease = yearOfRelease,
+                Actors = selectedActors,
+                Producer = selectedProducer,
+            };
+
+            _movieRepository.Add(movie);
         }
-        else
+
+        public List<Movie> GetMovies()
         {
-            Console.WriteLine("Invalid selection for actors. Please provide valid indices.");
+            return _movieRepository.GetAll();
         }
-    }
 
-    if (selectedActors.Count == 0)
-    {
-        Console.WriteLine("You must select at least one actor.");
-        return;
-    }
-
-    Console.WriteLine("\nSelect a producer:");
-    List<Producer> availableProducers = GetAvailableProducers();
-    for (int i = 0; i < availableProducers.Count; i++)
-    {
-        Console.WriteLine($"{i + 1}. {availableProducers[i].Name}");
-    }
-
-    int producerSelection;
-    while (!int.TryParse(Console.ReadLine(), out producerSelection) || producerSelection <= 0 || producerSelection > availableProducers.Count)
-    {
-        Console.WriteLine("Invalid selection. Please select a valid producer number.");
-    }
-
-    Producer selectedProducer = availableProducers[producerSelection - 1];
-    if (selectedProducer == null)
-    {
-        Console.WriteLine("Producer cannot be null.");
-        return;
-    }
-
-    // Ensure all information is valid before adding the movie
-    if (string.IsNullOrEmpty(movieName) || yearOfRelease <= 0 || string.IsNullOrEmpty(plot) || selectedActors.Count == 0 || selectedProducer == null)
-    {
-        Console.WriteLine("Invalid movie data. Please ensure all fields are filled in correctly.");
-        return;
-    }
-
-    // Create and add the new movie to the repository
-    var movie = new Movie()
-    {
-        Name = movieName,
-        Plot = plot,
-        YearOfRelease = yearOfRelease,
-        Actors = selectedActors,
-        Producer = selectedProducer,
-    };
-
-    _movieRepository.Add(movie);
-    Console.WriteLine("Movie added successfully!");
-}
-
-
-        private List<Actor> GetAvailableActors()
+        public List<Actor> GetAvailableActors()
         {
             return new List<Actor>
             {
@@ -116,11 +71,11 @@ namespace IMDBApplication
                 new Actor("Robert Downey Jr."),
                 new Actor("Scarlett Johansson"),
                 new Actor("Kate Winslet"),
-                new Actor("Will Smith")  // Optional: Example for adding 'Will Smith' if required
+                new Actor("Will Smith")
             };
         }
 
-        private List<Producer> GetAvailableProducers()
+        public List<Producer> GetAvailableProducers()
         {
             return new List<Producer>
             {
@@ -138,59 +93,20 @@ namespace IMDBApplication
 
             List<Movie> prepopulatedMovies = new List<Movie>
             {
-                new Movie(
-                    "Titanic",
-                    "A tragic love story on a doomed ship.",
-                    1997,
-                    new List<Actor> { availableActors[0], availableActors[3] },
-                    availableProducers[0]
-                ),
-                new Movie(
-                    "Inception",
-                    "A mind-bending thriller about dreams.",
-                    2010,
-                    new List<Actor> { availableActors[0], availableActors[1] },
-                    availableProducers[1]
-                ),
-                new Movie(
-                    "The Martian",
-                    "A stranded astronaut's struggle to survive on Mars.",
-                    2015,
-                    new List<Actor> { availableActors[1] },
-                    availableProducers[0]
-                ),
-                new Movie(
-                    "Jurassic Park",
-                    "Scientists bring dinosaurs back to life, but it goes terribly wrong.",
-                    1993,
-                    new List<Actor> { availableActors[1], availableActors[4] },
-                    availableProducers[0]
-                ),
-                new Movie(
-                    "The Dark Knight",
-                    "A gritty and realistic portrayal of the Batman story.",
-                    2008,
-                    new List<Actor> { availableActors[2] },
-                    availableProducers[1]
-                ),
-                new Movie(
-                    "Avatar",
-                    "A paraplegic marine on an alien planet becomes part of a new world.",
-                    2009,
-                    new List<Actor> { availableActors[0], availableActors[3] },
-                    availableProducers[3]
-                ),
+                new Movie { Name = "Titanic", Plot = "A tragic love story on a doomed ship.", YearOfRelease = 1997, Actors = new List<Actor> { availableActors[0], availableActors[3] }, Producer = availableProducers[0] },
+                new Movie { Name = "Inception", Plot = "A mind-bending thriller about dreams.", YearOfRelease = 2010, Actors = new List<Actor> { availableActors[0], availableActors[1] }, Producer = availableProducers[1] },
+                new Movie { Name = "The Martian", Plot = "A stranded astronaut's struggle to survive on Mars.", YearOfRelease = 2015, Actors = new List<Actor> { availableActors[1] }, Producer = availableProducers[0] },
+                new Movie { Name = "Jurassic Park", Plot = "Scientists bring dinosaurs back to life, but it goes terribly wrong.", YearOfRelease = 1993, Actors = new List<Actor> { availableActors[1], availableActors[4] }, Producer = availableProducers[0] },
+                new Movie { Name = "The Dark Knight", Plot = "A gritty and realistic portrayal of the Batman story.", YearOfRelease = 2008, Actors = new List<Actor> { availableActors[2] }, Producer = availableProducers[1] },
+                new Movie { Name = "Avatar", Plot = "A paraplegic marine on an alien planet becomes part of a new world.", YearOfRelease = 2009, Actors = new List<Actor> { availableActors[0], availableActors[3] }, Producer = availableProducers[3] }
             };
 
             foreach (var movie in prepopulatedMovies)
             {
-                 _movieRepository.Add(movie);
+                _movieRepository.Add(movie);
             }
         }
-
-        public List<Movie> GetMovies()
-        {
-            return _movieRepository.GetAll();
-        }
+        
     }
 }
+
