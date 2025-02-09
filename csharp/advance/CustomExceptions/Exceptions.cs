@@ -1,6 +1,6 @@
 namespace IMDBApplication{
-     public class ValidationException : Exception
+     public class CustomException : Exception
         {
-            public ValidationException(string message) : base(message) { }
+            public CustomException(string message) : base(message) { }
         }
 }

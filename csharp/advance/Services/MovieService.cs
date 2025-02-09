@@ -16,46 +16,55 @@ namespace IMDBApplication
 
         public void AddMovie(string movieName, int yearOfRelease, string plot, string actorSelection, int producerSelection)
         {
-            if (string.IsNullOrEmpty(movieName))
-                throw new ArgumentException("Movie name cannot be empty.");
-
-            if (yearOfRelease <= 0)
-                throw new ArgumentException("Invalid year of release.");
-
-            if (string.IsNullOrEmpty(plot))
-                throw new ArgumentException("Plot cannot be empty.");
-
-            List<Actor> availableActors = GetAvailableActors();
-            List<Actor> selectedActors = new List<Actor>();
-
-            foreach (string index in actorSelection.Split(','))
+            try
             {
-                if (int.TryParse(index.Trim(), out int actorIndex) && actorIndex > 0 && actorIndex <= availableActors.Count)
+                if (string.IsNullOrEmpty(movieName))
+                    throw new CustomException("Movie Name is Empty");
+
+                if (yearOfRelease <= 0)
+                    throw new CustomException("Invalid year of release.");
+
+                List<Actor> availableActors = GetAvailableActors();
+                List<Actor> selectedActors = new List<Actor>();
+
+                foreach (string index in actorSelection.Split(','))
                 {
-                    selectedActors.Add(availableActors[actorIndex - 1]);
+                    if (int.TryParse(index.Trim(), out int actorIndex) && actorIndex > 0 && actorIndex <= availableActors.Count)
+                    {
+                        selectedActors.Add(availableActors[actorIndex - 1]);
+                    }
                 }
+
+                if (selectedActors.Count == 0)
+                    throw new CustomException("You must select at least one actor.");
+
+                List<Producer> availableProducers = GetAvailableProducers();
+                if (producerSelection <= 0 || producerSelection > availableProducers.Count)
+                    throw new CustomException("Invalid producer selection.");
+
+                Producer selectedProducer = availableProducers[producerSelection - 1];
+
+                var movie = new Movie()
+                {
+                    Name = movieName,
+                    Plot = plot,
+                    YearOfRelease = yearOfRelease,
+                    Actors = selectedActors,
+                    Producer = selectedProducer,
+                };
+
+                _movieRepository.Add(movie);
             }
-
-            if (selectedActors.Count == 0)
-                throw new ArgumentException("You must select at least one actor.");
-
-            List<Producer> availableProducers = GetAvailableProducers();
-            if (producerSelection <= 0 || producerSelection > availableProducers.Count)
-                throw new ArgumentException("Invalid producer selection.");
-
-            Producer selectedProducer = availableProducers[producerSelection - 1];
-
-            var movie = new Movie()
+            catch (CustomException ex)
             {
-                Name = movieName,
-                Plot = plot,
-                YearOfRelease = yearOfRelease,
-                Actors = selectedActors,
-                Producer = selectedProducer,
-            };
-
-            _movieRepository.Add(movie);
+                Console.WriteLine($"Validation Error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unexpected Error: {ex.Message}");
+            }
         }
+
 
         public List<Movie> GetMovies()
         {

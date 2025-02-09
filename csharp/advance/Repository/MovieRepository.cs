@@ -21,7 +21,7 @@ namespace IMDBApplication{
 
         public List<Movie> GetAll()
         {
-            return _movies.ToList();
+            return _movies;
         }
     }
 }

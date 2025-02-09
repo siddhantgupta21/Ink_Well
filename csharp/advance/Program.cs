@@ -9,6 +9,7 @@ namespace IMDBApplication
         public static void Main(string[] args)
         {
             IMovieService movieService = new MovieService();
+            Query query = new Query(movieService);
 
             while (true)
             {
@@ -68,15 +69,9 @@ namespace IMDBApplication
 
                         int.TryParse(Console.ReadLine(), out int producerSelection);
 
-                        try
-                        {
-                            movieService.AddMovie(movieName, yearOfRelease, plot, actorSelection, producerSelection);
-                            Console.WriteLine("Movie added successfully!");
-                        }
-                        catch (ArgumentException ex)
-                        {
-                            Console.WriteLine($"Error: {ex.Message}");
-                        }
+                        
+                        movieService.AddMovie(movieName, yearOfRelease, plot, actorSelection, producerSelection);
+                        
                         break;
 
                     case "3":
@@ -88,16 +83,22 @@ namespace IMDBApplication
                         break;
                 }
             }
-            // var movies=movieService.GetMovies();
-            // var moviesAfter2010= movies.Where(movie=> movie.YearOfRelease>=2010);
-            // var moviesJamesCameroon= movies.Where(movie=> movie.Producer?.Name=="Steven Spielberg").Select(movie=>movie.Name);
-            // var allMovies = movies.Select(movie => new {movie.Name,movie.YearOfRelease});
-            // var Avatar=movies.FirstOrDefault(movie=>movie.Name=="Avatar").ToList();
-            // var moviesWillSmith = movies.Where(movies=>movies.Actors.Any(actor=>actor.Name=="Kate Winslet"));
-            // foreach(var a in Avatar){
-            //     Console.WriteLine($"{a.Name},{a.YearOfRelease}");
-            // }
-            // Console.WriteLine($"{Avatar.Name},{Avatar.YearOfRelease}");
+            var query1 = query.GetMoviesAfter2010();
+            var query2= query.GetMoviesByProducer("Steven Spielberg");
+            var query3 = query.GetAllMovies();
+            var query4 = query.GetMovieByName("Avatar");
+            var query5 = query.GetMoviesWithActor("Kate Winslet");
+
+            foreach(var q in query2){
+                Console.WriteLine($"{q}");
+            }
+
+            
+            foreach(var i in query3){
+                var a = (dynamic)i;
+                Console.WriteLine($"{a.Name},{a.YearOfRelease}");
+            }
+            Console.WriteLine($"{query4.Name},{query4.YearOfRelease}");
         }
     }
 }
