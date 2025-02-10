@@ -9,7 +9,6 @@ namespace IMDBApplication
         public static void Main(string[] args)
         {
             IMovieService movieService = new MovieService();
-            Query query = new Query(movieService);
 
             while (true)
             {
