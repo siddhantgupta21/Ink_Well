@@ -9,5 +9,13 @@ namespace IMDBApplication
         List<Movie> GetMovies();
         List<Actor> GetAvailableActors();
         List<Producer> GetAvailableProducers();
+
+        List<Movie> GetMoviesAfter2010();
+        List<string> GetMoviesByProducer(string producerName);
+
+        List<object> GetAllMovies();
+        Movie GetMovieByName(string movieName);
+
+        List<Movie> GetMoviesWithActor(string actorName);
     }
 }

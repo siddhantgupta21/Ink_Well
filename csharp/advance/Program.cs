@@ -17,6 +17,7 @@ namespace IMDBApplication
                 Console.WriteLine("1. List Movies");
                 Console.WriteLine("2. Add Movie");
                 Console.WriteLine("3. Exit");
+                Console.WriteLine("4. Queries");
                 Console.Write("Choose an option: ");
                 string input = Console.ReadLine();
 
@@ -77,28 +78,44 @@ namespace IMDBApplication
                     case "3":
                         Console.WriteLine("Exiting the application...");
                         return;
-
+                    case "4":
+                        Console.WriteLine();
+                        Console.WriteLine("Query 1");
+                        var query1 = movieService.GetMoviesAfter2010();
+                        foreach(var q in query1){
+                            Console.WriteLine($"{q.Name},{q.YearOfRelease}");
+                        }
+                        Console.WriteLine();
+                        Console.WriteLine("Query 2");
+                        var query2= movieService.GetMoviesByProducer("Steven Spielberg");
+                        foreach(var q in query2){
+                            Console.WriteLine($"{q}");
+                        }
+                        Console.WriteLine();
+                        Console.WriteLine("Query 3");
+                        var query3 = movieService.GetAllMovies();
+                        foreach(var i in query3){
+                            var a = (dynamic)i;
+                            Console.WriteLine($"{a.Name},{a.YearOfRelease}");
+                        }
+                        Console.WriteLine();
+                        Console.WriteLine("Query 4");
+                        var query4 = movieService.GetMovieByName("Avatar");
+                        Console.WriteLine($"{query4.Name},{query4.YearOfRelease}");
+                        Console.WriteLine();
+                        Console.WriteLine("Query 5");
+                        var query5 = movieService.GetMoviesWithActor("Kate Winslet");
+                        foreach(var q in query5){
+                            Console.WriteLine($"{q.Name}");
+                        }
+                        break;
                     default:
                         Console.WriteLine("Invalid option. Please choose again.");
                         break;
                 }
-            }
-            var query1 = query.GetMoviesAfter2010();
-            var query2= query.GetMoviesByProducer("Steven Spielberg");
-            var query3 = query.GetAllMovies();
-            var query4 = query.GetMovieByName("Avatar");
-            var query5 = query.GetMoviesWithActor("Kate Winslet");
-
-            foreach(var q in query2){
-                Console.WriteLine($"{q}");
-            }
-
             
-            foreach(var i in query3){
-                var a = (dynamic)i;
-                Console.WriteLine($"{a.Name},{a.YearOfRelease}");
-            }
-            Console.WriteLine($"{query4.Name},{query4.YearOfRelease}");
+            
         }
     }
+}
 }

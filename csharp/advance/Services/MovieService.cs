@@ -21,7 +21,7 @@ namespace IMDBApplication
                 if (string.IsNullOrEmpty(movieName))
                     throw new CustomException("Movie Name is Empty");
 
-                if (yearOfRelease <= 0)
+                if (yearOfRelease <= 0 || yearOfRelease > DateTime.Now.Year)
                     throw new CustomException("Invalid year of release.");
 
                 List<Actor> availableActors = GetAvailableActors();
@@ -114,6 +114,31 @@ namespace IMDBApplication
             {
                 _movieRepository.Add(movie);
             }
+        }
+
+         public List<Movie> GetMoviesAfter2010()
+        {
+            return _movieRepository.GetAll().Where(movie=> movie.YearOfRelease>=2010).ToList();
+        }
+
+        public List<string> GetMoviesByProducer(string producerName)
+        {
+            return _movieRepository.GetAll().Where(movie=> movie.Producer.Name==producerName).Select(movie=>movie.Name).ToList();
+        }
+
+        public List<object> GetAllMovies()
+        {
+            return _movieRepository.GetAll().Select(movie => new {movie.Name,movie.YearOfRelease}).Cast<object>().ToList();
+        }
+
+        public Movie GetMovieByName(string movieName)
+        {
+            return _movieRepository.GetAll().FirstOrDefault(movie=>movie.Name=="Avatar");
+        }
+
+        public List<Movie> GetMoviesWithActor(string actorName)
+        {
+            return _movieRepository.GetAll().Where(movies=>movies.Actors.Any(actor=>actor.Name==actorName)).ToList();
         }
         
     }
