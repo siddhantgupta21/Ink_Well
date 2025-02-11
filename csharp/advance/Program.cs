@@ -42,6 +42,7 @@ namespace IMDBApplication
                         break;
 
                     case "2":
+                        try{
                         Console.Write("Enter the movie name: ");
                         string movieName = Console.ReadLine();
 
@@ -68,9 +69,12 @@ namespace IMDBApplication
                         }
 
                         int.TryParse(Console.ReadLine(), out int producerSelection);
-
                         
                         movieService.AddMovie(movieName, yearOfRelease, plot, actorSelection, producerSelection);
+                        } catch (CustomException ex)
+                        {
+                            Console.WriteLine($"Error: {ex.Message}");
+                        }
                         
                         break;
 

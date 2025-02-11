@@ -17,5 +17,9 @@ namespace IMDBApplication
         Movie GetMovieByName(string movieName);
 
         List<Movie> GetMoviesWithActor(string actorName);
+
+        void ValidateYearOfRelease(int yearOfRelease);
+        void ValidateActorsSelection(string actorSelection);
+        void ValidateProducerSelection(int producerSelection);
     }
 }

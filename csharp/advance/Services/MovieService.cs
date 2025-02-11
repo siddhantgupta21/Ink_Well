@@ -140,6 +140,37 @@ namespace IMDBApplication
         {
             return _movieRepository.GetAll().Where(movies=>movies.Actors.Any(actor=>actor.Name==actorName)).ToList();
         }
+
+        public void ValidateYearOfRelease(int yearOfRelease)
+        {
+            if (yearOfRelease < 1888 || yearOfRelease > DateTime.Now.Year)
+            {
+                throw new CustomException("Invalid release year. Enter a valid year.");
+            }
+        }
+
+        public void ValidateActorsSelection(string actorSelection)
+        {
+            var availableActors = GetAvailableActors();
+            var selectedActorIds = actorSelection.Split(',')
+                                                .Select(s => int.TryParse(s.Trim(), out int id) ? id : -1)
+                                                .ToList();
+
+            if (selectedActorIds.Any(id => id < 1 || id > availableActors.Count))
+            {
+                throw new CustomException("Invalid actor selection.");
+            }
+        }
+
+        public void ValidateProducerSelection(int producerSelection)
+        {
+            var availableProducers = GetAvailableProducers();
+            if (producerSelection < 1 || producerSelection > availableProducers.Count)
+            {
+                throw new CustomException("Invalid producer selection.");
+            }
+        }
+
         
     }
 }
